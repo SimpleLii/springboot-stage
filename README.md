@@ -13,3 +13,15 @@ springboot脚手架
 
 
 ## 集成Mybatis
+    1. 分页
+    2. 日志开启
+    3. 驼峰
+    4. 多数据源待定
+    5. AOP 
+    6. 实例化bean的先后与关系
+    7. redis
+    8. es
+    9. mq
+    10. 工具类
+    11. ThreadLocal
+    
