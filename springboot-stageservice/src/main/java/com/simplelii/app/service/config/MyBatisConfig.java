@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,8 @@ public class MyBatisConfig {
     @Autowired
     private DataSourceProperties dataSourceProperties;
 
-
+    @Value("${spring.datasource.setValidationQuery}")
+    private String validationQuery;
     @Bean(name = "dataSource")
     public DruidDataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
@@ -32,7 +34,7 @@ public class MyBatisConfig {
         dataSource.setDriverClassName(dataSourceProperties.getDriverClassName());
         dataSource.setUsername(dataSourceProperties.getUsername());
         dataSource.setPassword(dataSourceProperties.getPassword());
-
+        dataSource.setValidationQuery(validationQuery);
         return dataSource;
 
     }
@@ -41,6 +43,7 @@ public class MyBatisConfig {
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource());
+
         // 设置插件
         sqlSessionFactoryBean.setPlugins(createInterceptors());
         return sqlSessionFactoryBean.getObject();
