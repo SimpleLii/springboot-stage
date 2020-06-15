@@ -7,5 +7,5 @@ spring:
   datasource:
     password: 123456
     username: root
-    url: jdbc:mysql://192.168.1.124/lixin?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&useSSL=true
+    url: jdbc:mysql://192.168.1.124:3306/lixin?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&useSSL=true
     setValidationQuery: SELECT 1
