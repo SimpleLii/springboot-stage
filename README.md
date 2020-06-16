@@ -8,6 +8,12 @@ springboot脚手架
    ----- springboot-stagedao      -------持久层\
    ----- springboot-stageservice      ---工程启动层\
    
+## 启动配置参数
+该处配置的一般是个性化的配置，配置文件中的配置一般是不动的，以防经常变动而出错且增加维护成本\
+
+-Dsimplelii.env.logger.level=INFO
+
+
 
 ## 集成简单API层日志打印
 

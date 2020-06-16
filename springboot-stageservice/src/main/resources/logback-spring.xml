@@ -5,7 +5,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%date %-5level [v:${yes.log.version}] [h:${yes.server.localHost}]
-                [m:${dtyunxi.env.module}] [reqId:%X{yes.req.requestId}] [%thread] %logger{36} [L:%line] -
+                [m:${simplelii.env.module}] [reqId:%X{yes.req.requestId}] [%thread] %logger{36} [L:%line] -
                 %msg%n
                 %date{yyyy-MM-dd HH:mm:ss}[${logback.appName}:%thread]%-5level %logger [%file:%line]:%msg%n
             </pattern>
@@ -14,11 +14,11 @@
     <!-- 写入文件配置 -->
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>
-            ${yes.server.logWorkDir}/${dtyunxi.env.module}/${dtyunxi.env.module}.log
+            ${yes.server.logWorkDir}/${simplelii.env.module}/${simplelii.env.module}.log
         </file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>
-                ${yes.server.logWorkDir}/${dtyunxi.env.module}/${dtyunxi.env.module}-%d{yyyy-MM-dd}.%i.log
+                ${yes.server.logWorkDir}/${simplelii.env.module}/${simplelii.env.module}-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <maxFileSize>5MB</maxFileSize>
             <maxHistory>30</maxHistory>
@@ -26,7 +26,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>%date %-5level [v:${yes.log.version}] [h:${yes.server.localHost}]
-                [m:${dtyunxi.env.module}] [reqId:%X{yes.req.requestId}] [%thread] %logger{36} [L:%line] -
+                [m:${simplelii.env.module}] [reqId:%X{yes.req.requestId}] [%thread] %logger{36} [L:%line] -
                 %msg%n
             </pattern>
         </encoder>
@@ -46,7 +46,7 @@
     <logger name="java.sql.Statement" level="DEBUG"/>
     <logger name="java.sql.PreparedStatement" level="DEBUG"/>
     <!-- 默认的日志 -->
-    <root level="${dtyunxi.env.logger.level}">
+    <root level="${simplelii.env.logger.level}">
         <appender-ref ref="ROLLING"/>
     </root>
 
@@ -54,13 +54,17 @@
     <!--<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">-->
         <!--&lt;!&ndash;日志异步到数据库 &ndash;&gt;-->
         <!--<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">-->
-            <!--&lt;!&ndash;连接池 &ndash;&gt;-->
-            <!--<dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">-->
+            <!--&lt;!&ndash;连接池 druid 有bug，使用c3p0&ndash;&gt;-->
+            <!--<dataSource class="com.alibaba.druid.pool.DruidDataSource">-->
                 <!--<driverClass>com.mysql.jdbc.Driver</driverClass>-->
-                <!--<url>jdbc:mysql://127.0.0.1:3306/databaseName</url>-->
-                <!--<user>root</user>-->
-                <!--<password>root</password>-->
+                <!--<url>${spring.datasource.url}</url>-->
+                <!--<user>${spring.datasource.username}</user>-->
+                <!--<password>${spring.datasource.password}</password>-->
+            <!--<sqlDialect class="ch.qos.logback.core.db.dialect.MySQLDialect" />-->
             <!--</dataSource>-->
         <!--</connectionSource>-->
+        <!--<flter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+            <!--<level>REEOR</level>-->
+        <!--</flter>-->
     <!--</appender>-->
 </configuration>
