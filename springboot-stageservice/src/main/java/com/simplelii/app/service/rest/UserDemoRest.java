@@ -24,6 +24,7 @@ public class UserDemoRest {
 
     @PostMapping("/add")
     public Long addUser(@RequestBody UserReqDto reqDto) {
+
         return userService.addUser(reqDto);
     }
 }
