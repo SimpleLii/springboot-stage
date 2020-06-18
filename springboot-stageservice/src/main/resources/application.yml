@@ -18,6 +18,9 @@ spring:
 yes:
   server:
     logWorkDir: C:\Users\yuandian\Desktop\workspace\springboot-stage
+    localHost: 8080
+  log:
+    version: 1.0.0
 simplelii:
   env:
     module: springboot-stage

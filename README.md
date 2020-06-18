@@ -32,4 +32,4 @@ springboot脚手架
     11. ThreadLocal
     12. nacos
     13. datasouce连接池
-    
+    14. uuid

@@ -1,8 +1,9 @@
 package com.simplelii.app.service.aop;
 
-import com.simplelii.app.api.IUserApi;
-import com.simplelii.app.api.query.IUserQueryApi;
+
+import com.simplelii.app.service.config.baselog.AbstractApiLogAspect;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +14,20 @@ import org.slf4j.LoggerFactory;
  * @date 2020/6/15
  */
 @Aspect
-public class LogAspect {
+public class LogAspect extends AbstractApiLogAspect {
 
     private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-
-    @Pointcut("execution (public * com.simplelii.app.api.*.*(..))")
+    @Override
+    @Pointcut("execution (public * com.simplelii.app.service.rest.*.*(..))")
     public void apiLogAop() {
+    }
 
+    /**
+     *  具体的实现可以放到base类，在该切面中指定
+     */
+    @Before(value = "apiLogAop()")
+    public void before(){
+        logger.info("==== before");
     }
 }
