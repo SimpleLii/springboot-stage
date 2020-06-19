@@ -20,7 +20,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>springboot-stage</name>
     <description>Demo project for Spring Boot</description>
-
+o
     <!-- 依赖版本管理-->
     <properties>
         <java.version>1.8</java.version>

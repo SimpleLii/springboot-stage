@@ -16,18 +16,9 @@ import org.slf4j.LoggerFactory;
 @Aspect
 public class LogAspect extends AbstractApiLogAspect {
 
-    private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
-
     @Override
     @Pointcut("execution (public * com.simplelii.app.service.rest.*.*(..))")
     public void apiLogAop() {
     }
 
-    /**
-     *  具体的实现可以放到base类，在该切面中指定
-     */
-    @Before(value = "apiLogAop()")
-    public void before(){
-        logger.info("==== before");
-    }
 }

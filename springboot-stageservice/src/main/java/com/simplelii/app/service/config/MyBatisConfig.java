@@ -35,6 +35,10 @@ public class MyBatisConfig {
         dataSource.setUsername(dataSourceProperties.getUsername());
         dataSource.setPassword(dataSourceProperties.getPassword());
         dataSource.setValidationQuery(validationQuery);
+//        dataSource.setConnectProperties();
+//        dataSource.setMaxActive();
+//        dataSource.setLogDifferentThread();
+
         return dataSource;
 
     }
