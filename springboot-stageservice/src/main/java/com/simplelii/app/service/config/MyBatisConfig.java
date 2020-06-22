@@ -6,11 +6,12 @@ import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
 
 /**
  * @author liXin
@@ -21,11 +22,12 @@ import org.springframework.context.annotation.Configuration;
 @MapperScan(basePackages = "com.simplelii.app.dao.mapper")
 public class MyBatisConfig {
 
-    @Autowired
+    @Resource
     private DataSourceProperties dataSourceProperties;
 
     @Value("${spring.datasource.setValidationQuery}")
     private String validationQuery;
+
     @Bean(name = "dataSource")
     public DruidDataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
@@ -35,9 +37,22 @@ public class MyBatisConfig {
         dataSource.setUsername(dataSourceProperties.getUsername());
         dataSource.setPassword(dataSourceProperties.getPassword());
         dataSource.setValidationQuery(validationQuery);
-//        dataSource.setConnectProperties();
-//        dataSource.setMaxActive();
-//        dataSource.setLogDifferentThread();
+        dataSource.setTestOnBorrow(false);
+
+        dataSource.setTestOnReturn(false);
+
+        dataSource.setTestWhileIdle(true);
+
+        dataSource.setTimeBetweenEvictionRunsMillis(60000L);
+
+        dataSource.setMinEvictableIdleTimeMillis(25200000L);
+
+        dataSource.setRemoveAbandoned(true);
+
+        dataSource.setRemoveAbandonedTimeout(1800);
+
+        dataSource.setLogAbandoned(true);
+        dataSource.setBreakAfterAcquireFailure(true);
 
         return dataSource;
 
@@ -53,7 +68,7 @@ public class MyBatisConfig {
         return sqlSessionFactoryBean.getObject();
     }
 
-    private Interceptor[] createInterceptors (){
+    private Interceptor[] createInterceptors() {
         Interceptor[] plugins = new Interceptor[1];
         // 分页插件
         plugins[0] = new PageInterceptor();

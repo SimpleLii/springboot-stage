@@ -5,13 +5,16 @@ server:
 ## --------------- mybatis ---------------
 spring:
   datasource:
-    password: 123456
+    password: root
     username: root
-    url: jdbc:mysql://192.168.1.124:3306/lixin?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&useSSL=false
+    url: jdbc:mysql://192.168.25.128:3306/lixin?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&useSSL=true
     driverClassName: com.mysql.cj.jdbc.Driver
     setValidationQuery: SELECT 1
 
 
+#logging:
+#  level:
+#    com.simplelii.app.dao.mapper: debug
 
 
 ## --------------- logback ---------------
@@ -29,3 +32,7 @@ simplelii:
 
 redis:
   test: test
+
+mybatis:
+  configuration:
+    log-prefix: com.simplelii.app.dao.mapper.

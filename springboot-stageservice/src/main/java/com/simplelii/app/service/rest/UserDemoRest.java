@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/user")
-public class UserDemoRest {
+public class UserDemoRest implements IUserApi{
 
     @Resource
     private IUserService userService;

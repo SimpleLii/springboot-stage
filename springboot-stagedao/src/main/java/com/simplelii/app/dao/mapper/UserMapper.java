@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper {
 
     @Insert({
-            "insert into user values(eo.id, eo.name, eo.address)"
+            "insert into user values(#{eo.id}, #{eo.name}, #{eo.address})"
     })
     public Long addUser(@Param("eo") UserEo eo);
 }
