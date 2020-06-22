@@ -12,9 +12,9 @@ spring:
     setValidationQuery: SELECT 1
 
 
-#logging:
-#  level:
-#    com.simplelii.app.dao.mapper: debug
+logging:
+  level:
+    com.simplelii.app.dao.mapper: debug
 
 
 ## --------------- logback ---------------
@@ -35,4 +35,4 @@ redis:
 
 mybatis:
   configuration:
-    log-prefix: com.simplelii.app.dao.mapper.
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
