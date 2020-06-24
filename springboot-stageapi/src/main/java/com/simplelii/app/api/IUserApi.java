@@ -1,5 +1,6 @@
 package com.simplelii.app.api;
 
+import com.simplelii.app.api.dto.RestResponse;
 import com.simplelii.app.api.dto.request.UserReqDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 public interface IUserApi {
 
     @ApiModelProperty(value = "新增 user", notes = "新增 user")
-    public Long addUser(UserReqDto userReqDto);
+    public RestResponse<Long> addUser(UserReqDto userReqDto);
 
 
 }

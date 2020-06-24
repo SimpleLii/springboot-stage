@@ -62,7 +62,7 @@ public abstract class AbstractApiLogAspect {
             if (LEVEL_FULL.equals(getLogRespLevel())) {
                 logger.info("Call API {}.{} End () Request => {}, RT:{} ms, Response => {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), argsToString(joinPoint.getArgs()), interval.toDurationMillis(), argsToString(response));
             } else if (LEVEL_ADJ.equals(getLogRespLevel())) {
-                RestResponse<?> restResponse = (RestResponse) response;
+                RestResponse<?> restResponse = (RestResponse<?>) response;
                 logger.info("Call API {}.{} End () Request => {}, RT:{} ms, Response => {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), argsToString(joinPoint.getArgs()), interval.toDurationMillis(), argsToAdjustString(restResponse));
             } else {
                 RestResponse<?> restResponse = (RestResponse) response;

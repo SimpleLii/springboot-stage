@@ -18,10 +18,16 @@ public class RestResponse<T> {
     private Object data;
 
 
-    public static final RestResponse SUCCESS = new RestResponse(SUCCESS_CODE, SUCCESS_MSG, (Void) new Object());
+    public static final RestResponse SUCCESS = new RestResponse(SUCCESS_CODE, SUCCESS_MSG, (Object) Void.class);
 
 
     public RestResponse() {
+    }
+
+    public RestResponse(Object data) {
+        this.resultCode = SUCCESS_CODE;
+        this.resultMsg = SUCCESS_MSG;
+        this.data = data;
     }
 
     public RestResponse(String resultCode, String resultMsg, Object data) {

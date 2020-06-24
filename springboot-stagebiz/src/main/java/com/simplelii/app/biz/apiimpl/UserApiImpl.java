@@ -1,6 +1,7 @@
 package com.simplelii.app.biz.apiimpl;
 
 import com.simplelii.app.api.IUserApi;
+import com.simplelii.app.api.dto.RestResponse;
 import com.simplelii.app.api.dto.request.UserReqDto;
 
 /**
@@ -10,7 +11,7 @@ import com.simplelii.app.api.dto.request.UserReqDto;
  */
 public class UserApiImpl implements IUserApi {
     @Override
-    public Long addUser(UserReqDto userReqDto) {
+    public RestResponse<Long> addUser(UserReqDto userReqDto) {
         return null;
     }
 }

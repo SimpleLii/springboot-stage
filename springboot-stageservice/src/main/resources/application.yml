@@ -14,7 +14,7 @@ spring:
 
 logging:
   level:
-    com.simplelii.app.dao.mapper: debug
+    com.simplelii.app.dao.mapper: info
 
 
 ## --------------- logback ---------------
@@ -33,6 +33,7 @@ simplelii:
 redis:
   test: test
 
+# 指定日志实现
 mybatis:
   configuration:
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
