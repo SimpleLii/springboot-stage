@@ -1,4 +1,4 @@
-package com.simplelii.app.service.config.baselog;
+package com.simplelii.app.service.aop;
 
 
 import com.alibaba.fastjson.JSON;

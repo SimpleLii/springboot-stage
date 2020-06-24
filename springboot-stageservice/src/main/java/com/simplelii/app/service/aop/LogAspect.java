@@ -1,12 +1,8 @@
 package com.simplelii.app.service.aop;
 
 
-import com.simplelii.app.service.config.baselog.AbstractApiLogAspect;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author liXin

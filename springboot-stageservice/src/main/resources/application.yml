@@ -11,12 +11,6 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
     setValidationQuery: SELECT 1
 
-
-logging:
-  level:
-    com.simplelii.app.dao.mapper: info
-
-
 ## --------------- logback ---------------
 yes:
   server:
@@ -33,7 +27,6 @@ simplelii:
 redis:
   test: test
 
-# 指定日志实现
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+## 指定日志实现
+logging:
+  config: classpath:logback-spring.xml
