@@ -6,7 +6,6 @@ import com.simplelii.app.dao.mapper.UserMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * @author liXin
@@ -14,14 +13,13 @@ import java.util.Map;
  * @date 2020/6/10
  */
 @Repository
-public class UserDas extends BaseDas {
+public class PersonDas extends BaseDas {
 
     @Resource
     private UserMapper userMapper;
 
     @Deprecated
     public Long addUser(UserEo eo) {
-        Map mappers = this.getMappers();
         UserMapper userMapper = (UserMapper) this.getMapper();
         return userMapper.addUser(eo);
     }

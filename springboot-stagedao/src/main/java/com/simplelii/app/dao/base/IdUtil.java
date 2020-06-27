@@ -1,4 +1,4 @@
-package com.simplelii.app.biz.utils;
+package com.simplelii.app.dao.base;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +36,12 @@ public class IdUtil {
         return INSTANCE;
     }
 
-    public static synchronized long nextId(long workerId, long tenantCode) throws Exception {
+    public static synchronized long nextId(long workerId, long tenantCode) throws RuntimeException {
         if ((workerId > maxWorkerId) || (workerId < 0L)) {
-            throw new Exception(String.format("worker Id can't be greater than %d or less than 0", sequenceMask));
+            throw new RuntimeException(String.format("worker Id can't be greater than %d or less than 0", sequenceMask));
         }
         if ((tenantCode > maxTenantId) || (tenantCode < 0L)) {
-            throw new Exception(String.format("tenant Id can't be greater than %d or less than 0", maxTenantId));
+            throw new RuntimeException(String.format("tenant Id can't be greater than %d or less than 0", maxTenantId));
         }
         long timestamp = System.currentTimeMillis();
         if (lastTimestamp == timestamp) {
@@ -55,7 +55,7 @@ public class IdUtil {
         if (timestamp < lastTimestamp) {
             logger.error(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
 
-            throw new Exception(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+            throw new RuntimeException(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
         lastTimestamp = timestamp;
         return tenantCode << tenantIdShift | timestamp - epoch << timestampShift | workerId << workerIdShift | sequence;

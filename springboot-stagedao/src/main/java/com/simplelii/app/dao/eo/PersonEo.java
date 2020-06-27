@@ -12,8 +12,8 @@ import javax.persistence.Table;
  * @date 2020/6/10
  */
 @Data
-@Table(name = "user")
-public class UserEo extends BaseEo{
+@Table(name = "person")
+public class PersonEo extends BaseEo{
 
 
     private Long id;
