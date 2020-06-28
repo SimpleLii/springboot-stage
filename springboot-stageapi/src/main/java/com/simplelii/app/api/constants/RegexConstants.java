@@ -1,7 +1,5 @@
 package com.simplelii.app.api.constants;
 
-import java.util.regex.Pattern;
-
 /**
  * @author SimpleLii
  * @description 正则表达式常量类

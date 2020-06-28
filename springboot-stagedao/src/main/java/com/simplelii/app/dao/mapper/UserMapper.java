@@ -1,6 +1,6 @@
 package com.simplelii.app.dao.mapper;
 
-import com.simplelii.app.dao.base.BaseMapper;
+import com.simplelii.app.common.dao.base.BaseMapper;
 import com.simplelii.app.dao.eo.UserEo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;

@@ -1,4 +1,7 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.dao.base;
+
+import com.simplelii.app.common.utils.CamelToUnderlineUtil;
+import com.simplelii.app.common.utils.SpringBeanUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +21,7 @@ public abstract class BaseDas<T extends BaseEo> {
         String[] split = name.split("\\.");
         String dasName = split[split.length - 1];
         String tempMapperName = dasName.substring(0, dasName.length() - 3) + "Mapper";
-        String mapperName = CamelToUnderline.camelStanderFormatFirstChar(tempMapperName);
+        String mapperName = CamelToUnderlineUtil.camelStanderFormatFirstChar(tempMapperName);
         MAPPER baseMapper = SpringBeanUtil.getBean(mapperName);
 //        mappers.putIfAbsent(mapperName, baseMapper);
         return baseMapper;

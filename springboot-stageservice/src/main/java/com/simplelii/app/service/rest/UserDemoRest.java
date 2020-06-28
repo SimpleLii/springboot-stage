@@ -1,7 +1,7 @@
 package com.simplelii.app.service.rest;
 
 import com.simplelii.app.api.IUserApi;
-import com.simplelii.app.api.dto.RestResponse;
+import com.simplelii.app.common.response.RestResponse;
 import com.simplelii.app.api.dto.request.UserReqDto;
 import com.simplelii.app.biz.service.IUserService;
 import org.springframework.web.bind.annotation.PostMapping;

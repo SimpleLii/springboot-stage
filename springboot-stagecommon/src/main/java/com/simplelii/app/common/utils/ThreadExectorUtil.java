@@ -1,4 +1,4 @@
-package com.simplelii.app.api.utils;
+package com.simplelii.app.common.utils;
 
 import java.util.concurrent.*;
 

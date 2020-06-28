@@ -21,34 +21,45 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>springboot-stage</name>
     <description>Demo project for Spring Boot</description>
-o
+    o
     <!-- 依赖版本管理-->
     <properties>
         <java.version>1.8</java.version>
         <mybatis-spring.version>1.3.2</mybatis-spring.version>
         <google-guava.version>28.1-jre</google-guava.version>
+        <io-swagger.version>1.5.22</io-swagger.version>
     </properties>
 
     <!-- 版本管理 -->
     <dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis-spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${google-guava.version}</version>
-        </dependency>
-
-
-    </dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google-guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${io-swagger.version}</version>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
 
     <!-- 依赖 -->
     <dependencies>
+
+        <dependency>
+            <artifactId>springboot-stagecommon</artifactId>
+            <groupId>com.simplelii</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -127,12 +138,12 @@ o
     </dependencies>
 
     <!--<build>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>org.springframework.boot</groupId>-->
+    <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
     <!--</build>-->
 
 </project>

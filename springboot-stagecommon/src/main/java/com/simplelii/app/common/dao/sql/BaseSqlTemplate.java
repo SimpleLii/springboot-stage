@@ -1,5 +1,8 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.dao.sql;
 
+import com.simplelii.app.common.dao.base.BaseEo;
+import com.simplelii.app.common.utils.BaseEoUtil;
+import com.simplelii.app.common.utils.IdUtil;
 import org.apache.ibatis.jdbc.SQL;
 
 /**

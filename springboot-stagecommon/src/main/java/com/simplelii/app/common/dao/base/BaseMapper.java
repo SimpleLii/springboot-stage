@@ -1,8 +1,7 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.dao.base;
 
-import org.apache.ibatis.annotations.*;
-
-import java.util.List;
+import com.simplelii.app.common.dao.sql.BaseSqlTemplate;
+import org.apache.ibatis.annotations.InsertProvider;
 
 /**
  * @author liXin

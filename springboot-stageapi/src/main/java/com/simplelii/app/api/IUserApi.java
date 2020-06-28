@@ -1,6 +1,6 @@
 package com.simplelii.app.api;
 
-import com.simplelii.app.api.dto.RestResponse;
+import com.simplelii.app.common.response.RestResponse;
 import com.simplelii.app.api.dto.request.UserReqDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

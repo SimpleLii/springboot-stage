@@ -1,4 +1,4 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @description
  * @date 14:24 2020/6/24
  */
-public class CamelToUnderline {
+public class CamelToUnderlineUtil {
     public static final char UNDERLINE = '_';
 
     /**

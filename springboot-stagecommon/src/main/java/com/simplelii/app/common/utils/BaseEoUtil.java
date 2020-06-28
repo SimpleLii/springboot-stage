@@ -1,5 +1,8 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.utils;
 
+import com.simplelii.app.common.dao.base.BaseEo;
+import com.simplelii.app.common.dao.table.ColumnInfo;
+import com.simplelii.app.common.dao.table.TableInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +178,7 @@ public class BaseEoUtil {
                     ColumnInfo columnInfo = new ColumnInfo();
                     columnInfo.setProperty(columnName);
                     columnInfo.setPropertyClass(field.getType());
-                    String tableColumn = !"".equals(column.name()) ? column.name() : CamelToUnderline.camelToUnderline(columnName);
+                    String tableColumn = !"".equals(column.name()) ? column.name() : CamelToUnderlineUtil.camelToUnderline(columnName);
                     columnInfo.setColumn(tableColumn);
 //                    if ((null != shardingColumnFiled) && (shardingColumnFiled.equals(tableColumn))) {
 //                        columnInfo.setShardColumn(true);

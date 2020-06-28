@@ -8,7 +8,7 @@
  * </body>
  * </html>
  */
-package com.simplelii.app.api.utils;
+package com.simplelii.app.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

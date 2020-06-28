@@ -1,6 +1,8 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.dao.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.simplelii.app.common.dao.sql.SqlCondition;
+import com.simplelii.app.common.dao.sql.SqlOrderBy;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -16,23 +18,23 @@ import java.util.List;
  * @date 2020/6/10
  */
 @Data
-public class BaseEo implements Serializable{
+public class BaseEo implements Serializable {
 
     private static final long serialVersionUID = 1906675943768391743L;
 
     @Id
     protected Long id;
 
-    @Column(name="create_person")
+    @Column(name = "create_person")
     protected String createPerson;
 
-    @Column(name="create_time")
+    @Column(name = "create_time")
     protected Date createTime;
 
-    @Column(name="update_person")
+    @Column(name = "update_person")
     protected String updatePerson;
 
-    @Column(name="update_time")
+    @Column(name = "update_time")
     protected Date updateTime;
 
     @Column(name = "dr")

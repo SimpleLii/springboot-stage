@@ -1,6 +1,7 @@
 package com.simplelii.app.service.aop;
 
 
+import com.simplelii.app.common.aspects.AbstractApiLogAspect;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 

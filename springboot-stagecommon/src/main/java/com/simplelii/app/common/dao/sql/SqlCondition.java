@@ -1,4 +1,4 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.dao.sql;
 
 /**
  * @author SimpleLii

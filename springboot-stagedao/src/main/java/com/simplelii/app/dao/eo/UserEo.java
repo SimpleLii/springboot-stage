@@ -1,6 +1,6 @@
 package com.simplelii.app.dao.eo;
 
-import com.simplelii.app.dao.base.BaseEo;
+import com.simplelii.app.common.dao.base.BaseEo;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -13,14 +13,14 @@ import javax.persistence.Table;
  */
 @Data
 @Table(name = "user")
-public class UserEo extends BaseEo{
+public class UserEo extends BaseEo {
 
 
     private Long id;
-@Column(name = "name")
+    @Column(name = "name")
     private String name;
 
-@Column(name = "address")
+    @Column(name = "address")
     private String address;
 
 }

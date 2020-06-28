@@ -1,4 +1,4 @@
-package com.simplelii.app.dao.base;
+package com.simplelii.app.common.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

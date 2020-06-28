@@ -1,6 +1,6 @@
 package com.simplelii.app.api.dto.request;
 
-import com.simplelii.app.api.dto.BaseDto;
+import com.simplelii.app.common.response.BaseDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
