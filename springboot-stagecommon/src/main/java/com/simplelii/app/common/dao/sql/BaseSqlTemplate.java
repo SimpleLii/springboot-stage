@@ -3,6 +3,7 @@ package com.simplelii.app.common.dao.sql;
 import com.simplelii.app.common.dao.base.BaseEo;
 import com.simplelii.app.common.utils.BaseEoUtil;
 import com.simplelii.app.common.utils.IdUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.text.MessageFormat;
@@ -32,7 +33,7 @@ public class BaseSqlTemplate<T extends BaseEo> {
 
     private Long getId() {
         Long workerId = BaseEoUtil.getWorkerId();
-        return Long.valueOf(IdUtil.nextId(workerId.longValue(), TENANT_CODE));
+        return IdUtil.nextId(workerId, TENANT_CODE);
     }
 
     public String insertBatch(Map<String, List<T>> params) {
@@ -72,39 +73,56 @@ public class BaseSqlTemplate<T extends BaseEo> {
 //    public String update(T obj) {
 //        return getUpdateSql(obj, false);
 //    }
-//
-//    public String updateSelective(T obj) {
-//        return getUpdateSql(obj, true);
-//    }
-//
-//    private String getUpdateSql(T obj, boolean flag) {
-//        String returnUpdateSet = null;
-//        if (flag) {
-//            returnUpdateSet = BaseEoUtil.returnUpdateSetNotNull(obj);
-//        } else {
-//            returnUpdateSet = BaseEoUtil.returnUpdateSet(obj);
-//        }
-//        String idname = BaseEoUtil.idName(obj.getClass());
-//        SQL sql = new SQL();
-//        sql.UPDATE(BaseEoUtil.tableName(obj.getClass()));
-//        sql.SET(returnUpdateSet);
-//        sql.WHERE(idname + "= #{" + idname + "}");
-//        return sql.toString();
-//    }
-//
-//    public String updateSelectiveSqlFilter(T obj) {
-//        SQL sql = new SQL();
-//        sql.UPDATE(BaseEoUtil.tableName(obj.getClass()));
-//        sql.SET(BaseEoUtil.returnUpdateSetNotNull(obj));
-//        String where = BaseEoUtil.returnUpdateWhereColumnNames(obj);
-//        if (StringUtils.isNotBlank(where)) {
-//            sql.WHERE(where);
-//        } else {
-//            return null;
-//        }
-//        return sql.toString();
-//    }
-//
+
+    /**
+     *  更新指定字段的值,id毕传
+     * @param obj
+     * @return
+     */
+    public String updateSelect(T obj) {
+        return getUpdateSql(obj, true);
+    }
+
+    /**
+     *  封装update_sql
+     * @param obj
+     * @param flag true：只更新eo对象有值的字段
+     * @return
+     */
+    private String getUpdateSql(T obj, boolean flag) {
+        String returnUpdateSet = null;
+        if (flag) {
+            returnUpdateSet = BaseEoUtil.returnUpdateSetNotNull(obj);
+        } else {
+            returnUpdateSet = BaseEoUtil.returnUpdateSet(obj);
+        }
+        String idName = BaseEoUtil.idName(obj.getClass());
+        SQL sql = new SQL();
+        sql.UPDATE(BaseEoUtil.tableName(obj.getClass()));
+        sql.SET(returnUpdateSet);
+        sql.WHERE(idName + "= #{" + idName + "}");
+        return sql.toString();
+    }
+
+    /**
+     * 根据条件更新有值的字段（eo对象）
+     * 该方法内部逻辑是直接拼接where sql，需要进行防注入判断（针对condition使用PreparedStatement不好处理，）
+     * @param obj
+     * @return
+     */
+    public String updateSelectSqlCondition(T obj) {
+        SQL sql = new SQL();
+        sql.UPDATE(BaseEoUtil.tableName(obj.getClass()));
+        sql.SET(BaseEoUtil.returnUpdateSetNotNull(obj));
+        String where = BaseEoUtil.returnUpdateWhereColumnNames(obj);
+        if (StringUtils.isNotBlank(where)) {
+            sql.WHERE(where);
+        } else {
+            return null;
+        }
+        return sql.toString();
+    }
+
 //    public String delete(T obj) {
 //        return deleteLogic(obj, Boolean.valueOf(false));
 //    }

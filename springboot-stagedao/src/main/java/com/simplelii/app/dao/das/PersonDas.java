@@ -18,10 +18,17 @@ public class PersonDas extends BaseDas {
     @Resource
     private UserMapper userMapper;
 
-    @Deprecated
+
     public Long addUser(UserEo eo) {
-        UserMapper userMapper = (UserMapper) this.getMapper();
-        return userMapper.addUser(eo);
+      this.updateSelect();
+      return 12L;
+    }
+
+    public void updateSelect(){
+        UserEo eo = new UserEo();
+        eo.setId(1245690923534717955L);
+        eo.setName("updateName");
+        userMapper.updateSelect(eo);
     }
 
 }

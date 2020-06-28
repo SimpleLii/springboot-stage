@@ -50,7 +50,7 @@ public class BaseEo implements Serializable {
 
     @JsonIgnore
     @Transient
-    protected transient List<SqlCondition> sqlFilters;
+    protected transient List<SqlCondition> sqlConditions;
 
     @JsonIgnore
     @Transient

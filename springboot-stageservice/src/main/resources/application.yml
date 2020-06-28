@@ -3,21 +3,21 @@ server:
   port: 8080
 
 ## --------------- mybatis ---------------
-#spring:
-#  datasource:
-#    password: root
-#    username: root
-#    url: jdbc:mysql://192.168.25.128:3306/lixin?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&useSSL=true
-#    driverClassName: com.mysql.cj.jdbc.Driver
-#    setValidationQuery: SELECT 1
-
 spring:
   datasource:
     password: root
     username: root
-    url: jdbc:mysql://192.168.1.124:3306/lixin?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+    url: jdbc:mysql://192.168.25.128:3306/lixin?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&useSSL=true&serverTimezone=UTC
     driverClassName: com.mysql.cj.jdbc.Driver
     setValidationQuery: SELECT 1
+#
+#spring:
+#  datasource:
+#    password: root
+#    username: root
+#    url: jdbc:mysql://192.168.1.124:3306/lixin?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+#    driverClassName: com.mysql.cj.jdbc.Driver
+#    setValidationQuery: SELECT 1
 
 ## --------------- logback ---------------
 yes:

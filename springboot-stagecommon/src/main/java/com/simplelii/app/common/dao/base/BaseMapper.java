@@ -3,6 +3,7 @@ package com.simplelii.app.common.dao.base;
 import com.simplelii.app.common.dao.sql.BaseSqlTemplate;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.util.List;
 
@@ -30,19 +31,19 @@ public interface BaseMapper<T extends BaseEo> {
      */
     @InsertProvider(type = BaseSqlTemplate.class, method = "insertBatch")
     public abstract int insertBatch(@Param("objList") List<T> paramList);
-//
-//    /**
-//     * 只更新传入参数的数据，需要为null的字段请使用对应的枚举，更新数据
-//     * 对象需要传入id
-//     * @param paramT
-//     * @return
-//     */
-//    @UpdateProvider(type = BaseSqlTemplate.class, method = "updateSelect")
-//    public abstract int updateSelect(T paramT, Long id);
-//
-//    @UpdateProvider(type = BaseSqlTemplate.class, method = "updateSelectSqlCondition")
-//    public abstract int updateSelectBySqlCondition(T paramT);
-//
+
+    /**
+     * 只更新传入参数的数据，需要为null的字段请使用对应的枚举，更新数据
+     * 对象需要传入id
+     * @param paramT
+     * @return
+     */
+    @UpdateProvider(type = BaseSqlTemplate.class, method = "updateSelect")
+    public abstract int updateSelect(T paramT);
+
+    @UpdateProvider(type = BaseSqlTemplate.class, method = "updateSelectSqlCondition")
+    public abstract int updateSelectBySqlCondition(T paramT);
+
 //    /**
 //     *  通过id删除数据
 //     * @param paramClass

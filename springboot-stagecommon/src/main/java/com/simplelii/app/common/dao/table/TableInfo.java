@@ -18,7 +18,7 @@ public class TableInfo implements Serializable {
     private String tableName;
     // id字段名
     private String idColumn;
-    // 字段集合
+    // 字段集合(包含id)
     private List<ColumnInfo> columns;
     // 默认字段集合
     private List<ColumnInfo> baseColumns;
