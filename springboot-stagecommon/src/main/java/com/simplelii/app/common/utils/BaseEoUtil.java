@@ -26,12 +26,15 @@ public class BaseEoUtil {
 
     private static Logger logger = LoggerFactory.getLogger(BaseEoUtil.class);
     private static Long workerId = null;
+    // 缓存表映射对象信息
     private static final Map<String, TableInfo> tables = new ConcurrentHashMap();
     private static final Random random = new Random();
     private static List<ColumnInfo> baseColumns;
     private static final SimpleDateFormat SDF_DATETIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
+    // insert default columns
+    private static final String DEF_COLUMNS = "create_time,update_time,create_person,update_person,dr";
 
     public static Long getWorkerId() {
         if (null != workerId) {
@@ -88,7 +91,7 @@ public class BaseEoUtil {
      */
     private static <T extends BaseEo> TableInfo getTableInfo(Class<T> aClass) throws RuntimeException {
         String name = aClass.getName();
-        Table table = (Table) aClass.getAnnotation(Table.class);
+        Table table = aClass.getAnnotation(Table.class);
         TableInfo tableInfo = new TableInfo();
         if (table != null) {
             tableInfo.setTableName(table.name());
@@ -115,7 +118,7 @@ public class BaseEoUtil {
                 logger.info("Eo_Class与表字段映射异常: {}", name);
             }
         }
-        TableInfo oldTableInfo = (TableInfo) tables.putIfAbsent(name, tableInfo);
+        TableInfo oldTableInfo = tables.putIfAbsent(name, tableInfo);
         if (oldTableInfo != null) {
             oldTableInfo.setBaseColumns(baseColumns);
             return oldTableInfo;
@@ -137,11 +140,19 @@ public class BaseEoUtil {
         return (TableInfo) tables.get(name);
     }
 
+    /**
+     * 获取表字段对象信息
+     *
+     * @param aClass
+     * @param <T>
+     * @return
+     * @throws RuntimeException
+     */
     private static <T extends BaseEo> List<ColumnInfo> getColumnList(Class<T> aClass) throws RuntimeException {
         String name = aClass.getName();
         TableInfo tableInfo = null;
         if (tables.containsKey(name)) {
-            tableInfo = (TableInfo) tables.get(name);
+            tableInfo = tables.get(name);
             if (tableInfo.getColumns() != null) {
                 return tableInfo.getColumns();
             }
@@ -172,7 +183,7 @@ public class BaseEoUtil {
     private static void getColumnInfos(List<ColumnInfo> columnList, Set<String> columnSet, String shardingColumnFiled, Field[] declaredFields) {
         for (Field field : declaredFields) {
             if (field.isAnnotationPresent(Column.class)) {
-                Column column = (Column) field.getAnnotation(Column.class);
+                Column column = field.getAnnotation(Column.class);
                 String columnName = field.getName();
                 if ((columnSet == null) || (!columnSet.contains(columnName))) {
                     ColumnInfo columnInfo = new ColumnInfo();
@@ -244,6 +255,14 @@ public class BaseEoUtil {
 //        return true;
 //    }
 
+    /**
+     * @param aClass
+     * @param obj
+     * @param fieldName
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
     private static <T extends BaseEo> boolean fieldValueBoolean(Class<?> aClass, T obj, String fieldName) throws Exception {
         Class<?> clazz = aClass;
         while ((clazz != BaseEo.class) && (clazz != Object.class)) {
@@ -286,7 +305,7 @@ public class BaseEoUtil {
                 sb.append(map.getColumn()).append(',');
             }
         }
-        sb.append(insertDefColumn());
+        sb.append(DEF_COLUMNS);
         return sb.toString();
     }
 
@@ -325,19 +344,26 @@ public class BaseEoUtil {
                 sb.append("#{").append(map.getProperty()).append("},");
             }
         }
-        sb.append(insertValue(obj, Boolean.valueOf(false)));
+        sb.append(insertValue(obj, Boolean.FALSE));
         return sb.toString();
     }
 
-    //    public static <T extends BaseEo> String returnInsertColumnsNameBatch(Class<T> aClass) {
-//        StringBuilder sb = new StringBuilder("id,");
-//        for (ColumnInfo map : getColumnList(aClass)) {
-//            sb.append(map.getColumn()).append(',');
-//        }
-//        sb.append(insertColumn());
-//        return sb.toString();
-//    }
-//
+    public static <T extends BaseEo> String returnInsertColumnsNameBatch(Class<T> aClass) {
+        StringBuilder sb = new StringBuilder("id,");
+        for (ColumnInfo map : getColumnList(aClass)) {
+            sb.append(map.getColumn()).append(',');
+        }
+        sb.append(DEF_COLUMNS);
+        return sb.toString();
+    }
+
+    /**
+     * 拼接sql占位符
+     * objList[{0}]  中 {0} 是String格式化的站位符
+     * @param obj
+     * @param <T>
+     * @return
+     */
     public static <T extends BaseEo> String returnInsertColumnsDefBatch(T obj) {
         Class<T> aClass = (Class<T>) obj.getClass();
         StringBuilder sb = new StringBuilder();
@@ -345,12 +371,8 @@ public class BaseEoUtil {
         for (ColumnInfo map : getColumnList(aClass)) {
             sb.append("#'{'objList[{0}].").append(map.getProperty()).append("'}',");
         }
-        sb.append(insertValue(obj, Boolean.valueOf(true))).append(")");
+        sb.append(insertValue(obj, Boolean.TRUE)).append(")");
         return sb.toString();
-    }
-
-    private static String insertDefColumn() {
-        return "create_time,update_time,create_person,update_person,dr";
     }
 
     private static <T extends BaseEo> String insertValue(T obj, Boolean isBatch) {
@@ -373,7 +395,7 @@ public class BaseEoUtil {
                 obj.setUpdatePerson(requestUserCode);
             }
         }
-        if (isBatch.booleanValue()) {
+        if (isBatch) {
             sb.append("#'{'objList[{0}].createTime'}'").append(',').append("#'{'objList[{0}].createTime'}'").append(',').append("#'{'objList[{0}].createPerson'}'").append(',').append("#'{'objList[{0}].createPerson'}'").append(',').append("#'{'objList[{0}].dr'}'");
         } else {
             sb.append("#{createTime}").append(',').append("#{createTime}").append(',').append("#{createPerson}").append(',').append("#{createPerson}").append(',').append("#{dr}");

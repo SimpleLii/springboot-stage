@@ -5,6 +5,10 @@ import com.simplelii.app.common.utils.BaseEoUtil;
 import com.simplelii.app.common.utils.IdUtil;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author SimpleLii
  * @description
@@ -31,37 +35,39 @@ public class BaseSqlTemplate<T extends BaseEo> {
         return Long.valueOf(IdUtil.nextId(workerId.longValue(), TENANT_CODE));
     }
 
-//    public String insertBatch(Map<String, List<T>> params) {
-//        List<T> objList = (List) params.get("objList");
-//        if ((objList == null) || (objList.size() == 0)) {
-//            return "sql error";
-//        }
-//        SQL sql = new SQL();
-//        T obj = (BaseEo) objList.get(0);
-//        sql.INSERT_INTO(BaseEoUtil.tableName(obj.getClass()));
-//        String[] values = new String[objList.size()];
-//        for (int i = 0; i < objList.size(); i++) {
-//            StringBuilder sb = new StringBuilder();
-//            MessageFormat mf = new MessageFormat(BaseEoUtil.returnInsertColumnsDefBatch((BaseEo) objList.get(i)));
-//            Long id = ((BaseEo) objList.get(i)).getId();
-//            if ((null == ((BaseEo) objList.get(i)).getId()) || (((BaseEo) objList.get(i)).getId().equals(Long.valueOf(0L)))) {
-//                id = getId();
-//            }
-//            if (i > 0) {
-//                sb.append("(");
-//            }
-//            sb.append(mf.format(new Object[]{String.valueOf(i)}));
-//            if ((i == objList.size() - 1) &&
-//                    (sb.charAt(sb.length() - 1) == ')')) {
-//                sb.deleteCharAt(sb.length() - 1);
-//            }
-//            values[i] = sb.toString();
-//            ((BaseEo) objList.get(i)).setId(id);
-//        }
-//        sql.INTO_COLUMNS(new String[]{BaseEoUtil.returnInsertColumnsNameBatch(obj.getClass())});
-//        sql.INTO_VALUES(values);
-//        return sql.toString();
-//    }
+    public String insertBatch(Map<String, List<T>> params) {
+        List<T> objList = params.get("objList");
+        if ((objList == null) || (objList.size() == 0)) {
+            return "sql error";
+        }
+        SQL sql = new SQL();
+        T obj = objList.get(0);
+        sql.INSERT_INTO(BaseEoUtil.tableName(obj.getClass()));
+        // sql占位符接收数组
+        String[] values = new String[objList.size()];
+        for (int i = 0; i < objList.size(); i++) {
+            StringBuilder sb = new StringBuilder();
+            MessageFormat mf = new MessageFormat(BaseEoUtil.returnInsertColumnsDefBatch(objList.get(i)));
+            Long id = (objList.get(i)).getId();
+            if ((null == (objList.get(i)).getId()) || ((objList.get(i)).getId().equals(0L))) {
+                id = getId();
+            }
+            if (i > 0) {
+                sb.append("(");
+            }
+            // 替换对应的角标
+            sb.append(mf.format(new Object[]{String.valueOf(i)}));
+            if ((i == objList.size() - 1) &&
+                    (sb.charAt(sb.length() - 1) == ')')) {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+            values[i] = sb.toString();
+            objList.get(i).setId(id);
+        }
+        sql.INTO_COLUMNS(BaseEoUtil.returnInsertColumnsNameBatch(obj.getClass()));
+        sql.INTO_VALUES(values);
+        return sql.toString();
+    }
 //
 //    public String update(T obj) {
 //        return getUpdateSql(obj, false);

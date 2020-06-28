@@ -10,9 +10,16 @@ import java.io.Serializable;
 public class ColumnInfo implements Serializable {
 
     private static final long serialVersionUID = 8550904383009293852L;
+    // 表字段名
     private String column;
+
+    // 映射eo字段（驼峰）
     private String property;
+
+    // 是否分片
     private boolean isShardColumn;
+
+    // 映射eo字段类型
     private Class<?> propertyClass;
 
     public String getColumn() {

@@ -11,8 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description dao
  * @date 2020/6/10
  */
-public abstract class BaseDas<T extends BaseEo> {
-
+public abstract class BaseDas<T extends BaseEo>{
 
     private static Map<String, BaseMapper> mappers = new ConcurrentHashMap<>();
 
@@ -22,9 +21,7 @@ public abstract class BaseDas<T extends BaseEo> {
         String dasName = split[split.length - 1];
         String tempMapperName = dasName.substring(0, dasName.length() - 3) + "Mapper";
         String mapperName = CamelToUnderlineUtil.camelStanderFormatFirstChar(tempMapperName);
-        MAPPER baseMapper = SpringBeanUtil.getBean(mapperName);
-//        mappers.putIfAbsent(mapperName, baseMapper);
-        return baseMapper;
+        return SpringBeanUtil.<MAPPER>getBean(mapperName);
     }
 
     /**

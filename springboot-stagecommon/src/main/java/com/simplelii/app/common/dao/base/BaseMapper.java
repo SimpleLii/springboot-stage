@@ -2,6 +2,9 @@ package com.simplelii.app.common.dao.base;
 
 import com.simplelii.app.common.dao.sql.BaseSqlTemplate;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author liXin
@@ -9,8 +12,6 @@ import org.apache.ibatis.annotations.InsertProvider;
  * @date 2020/6/10
  */
 public interface BaseMapper<T extends BaseEo> {
-
-
 
     /**
      * 插入单条数据
@@ -20,15 +21,15 @@ public interface BaseMapper<T extends BaseEo> {
      */
     @InsertProvider(type = BaseSqlTemplate.class, method = "insert")
     public abstract int insert(T paramT);
-//
-//    /**
-//     * 批量插入数据
-//     *
-//     * @param paramList
-//     * @return
-//     */
-//    @InsertProvider(type = BaseSqlTemplate.class, method = "insertBatch")
-//    public abstract int insertBatch(@Param("objList") List<T> paramList);
+
+    /**
+     * 批量插入数据
+     *
+     * @param paramList
+     * @return
+     */
+    @InsertProvider(type = BaseSqlTemplate.class, method = "insertBatch")
+    public abstract int insertBatch(@Param("objList") List<T> paramList);
 //
 //    /**
 //     * 只更新传入参数的数据，需要为null的字段请使用对应的枚举，更新数据

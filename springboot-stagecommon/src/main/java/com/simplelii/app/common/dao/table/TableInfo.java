@@ -14,9 +14,13 @@ import java.util.List;
 public class TableInfo implements Serializable {
 
     private static final long serialVersionUID = 7988187026023138738L;
+    // 表名
     private String tableName;
+    // id字段名
     private String idColumn;
+    // 字段集合
     private List<ColumnInfo> columns;
+    // 默认字段集合
     private List<ColumnInfo> baseColumns;
 
     public void setTableName(String tableName) {
