@@ -42,19 +42,23 @@ public class BaseEo implements Serializable {
 
     @JsonIgnore
     @Transient
+    // 多个字段使用逗号分隔
     protected transient String orderByDesc;
 
     @JsonIgnore
     @Transient
+    // 多个字段使用逗号分隔
     protected transient String orderBy;
 
     @JsonIgnore
     @Transient
-    protected transient List<SqlCondition> sqlConditions;
+    // 条件顺序与list顺序一致
+    protected transient List<SqlOrderBy> sqlOrderBys;
 
     @JsonIgnore
     @Transient
-    protected transient List<SqlOrderBy> sqlOrderBys;
+    // where 条件封装对象 ，条件顺序与list顺序一致
+    protected transient List<SqlCondition> sqlConditions;
 
 
 }

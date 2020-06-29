@@ -2,10 +2,13 @@ package com.simplelii.app.common.utils;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.simplelii.app.common.constants.EoDefaultConstant;
 import com.simplelii.app.common.dao.base.BaseEo;
 import com.simplelii.app.common.dao.sql.SqlCondition;
+import com.simplelii.app.common.dao.sql.SqlOrderBy;
 import com.simplelii.app.common.dao.table.ColumnInfo;
 import com.simplelii.app.common.dao.table.TableInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +44,6 @@ public class BaseEoUtil {
     private static final SimpleDateFormat SDF_DATETIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
-    // insert default columns
-    private static final String DEF_COLUMNS = "create_time,update_time,create_person,update_person,dr";
-    // updatePerson
-    private static final String UPDATE_PERSON = "default";
 
     public static Long getWorkerId() {
         if (null != workerId) {
@@ -92,7 +91,7 @@ public class BaseEoUtil {
     }
 
     /**
-     * 应用程序初次调用，缓存TableInfo对象
+     * 应用程序初次调用，缓存默认字段
      *
      * @param aClass
      * @param <T>
@@ -117,11 +116,11 @@ public class BaseEoUtil {
                 break;
             }
         }
+        // 默认字段处理
         if (baseColumns == null) {
             try {
                 baseColumns = new ArrayList(declaredFields.length);
-                getColumnInfos(baseColumns, null, null, declaredFields);
-                // 单独处理id字段
+                getColumnInfos(baseColumns, null, declaredFields);
                 ColumnInfo columnInfo = new ColumnInfo();
                 columnInfo.setColumn("id");
                 columnInfo.setProperty("id");
@@ -162,7 +161,7 @@ public class BaseEoUtil {
     }
 
     /**
-     * 获取表字段对象信息
+     * 获取表非默认字段信息
      *
      * @param aClass
      * @param <T>
@@ -178,6 +177,7 @@ public class BaseEoUtil {
                 return tableInfo.getColumns();
             }
         } else {
+            // 此时对象中的columns为null
             tableInfo = getTableInfo(aClass);
         }
         // 获取表的非默认字段
@@ -187,12 +187,8 @@ public class BaseEoUtil {
         String shardingColumnFiled = null;
         for (; clazz != BaseEo.class; clazz = clazz.getSuperclass()) {
             try {
-//                ShardingColumn shardingColumn = (ShardingColumn) clazz.getAnnotation(ShardingColumn.class);
-//                if (shardingColumn != null) {
-//                    shardingColumnFiled = shardingColumn.name();
-//                }
                 Field[] declaredFields = clazz.getDeclaredFields();
-                getColumnInfos(columnList, columnSet, shardingColumnFiled, declaredFields);
+                getColumnInfos(columnList, columnSet, declaredFields);
             } catch (Exception localException) {
             }
         }
@@ -201,8 +197,9 @@ public class BaseEoUtil {
         return columnList;
     }
 
-    private static void getColumnInfos(List<ColumnInfo> columnList, Set<String> columnSet, String shardingColumnFiled, Field[] declaredFields) {
+    private static void getColumnInfos(List<ColumnInfo> columnList, Set<String> columnSet, Field[] declaredFields) {
         for (Field field : declaredFields) {
+
             if (field.isAnnotationPresent(Column.class)) {
                 Column column = field.getAnnotation(Column.class);
                 String columnName = field.getName();
@@ -212,9 +209,6 @@ public class BaseEoUtil {
                     columnInfo.setPropertyClass(field.getType());
                     String tableColumn = !"".equals(column.name()) ? column.name() : CamelToUnderlineUtil.camelToUnderline(columnName);
                     columnInfo.setColumn(tableColumn);
-//                    if ((null != shardingColumnFiled) && (shardingColumnFiled.equals(tableColumn))) {
-//                        columnInfo.setShardColumn(true);
-//                    }
                     columnList.add(columnInfo);
                     if (columnSet != null) {
                         columnSet.add(columnName);
@@ -224,11 +218,11 @@ public class BaseEoUtil {
         }
     }
 
-//    private static <T extends BaseEo> boolean isWhereNull(T obj, String fieldName) {
-//        Class<?> aClass = obj.getClass();
-//        try {
-//            return fieldValueWhere(aClass, obj, fieldName);
-//        } catch (Exception e) {
+    private static <T extends BaseEo> boolean isWhereNull(T obj, String fieldName) {
+        Class<?> aClass = obj.getClass();
+        try {
+            return fieldValueWhere(aClass, obj, fieldName);
+        } catch (Exception e) {
 //            for (Class<?> clazz = aClass; clazz != Object.class; clazz = clazz.getSuperclass()) {
 //                try {
 //                    if (clazz == BaseDefEo.class) {
@@ -237,44 +231,23 @@ public class BaseEoUtil {
 //                } catch (Exception localException1) {
 //                }
 //            }
-//        }
-//        return true;
-//    }
+        }
+        return true;
+    }
 
-    private static <T extends BaseEo> boolean fieldValueWhere(Class<?> aClass, T obj, String fieldName)
-            throws Exception {
+    private static <T extends BaseEo> boolean fieldValueWhere(Class<?> aClass, T obj, String fieldName) throws Exception {
         Class<?> clazz = aClass;
         while ((clazz != BaseEo.class) && (clazz != Object.class)) {
             try {
                 Field field = clazz.getDeclaredField(fieldName);
                 field.setAccessible(true);
-                if ((field.get(obj) != null) && (!"".equals(field.get(obj)))) {
-                    return false;
-                }
-                return true;
+                return field.get(obj) == null || "".equals(field.get(obj));
             } catch (NoSuchFieldException ex) {
                 clazz = clazz.getSuperclass();
             }
         }
         return true;
     }
-
-//    private static <T extends BaseEo> boolean isNull(T obj, String fieldName) {
-//        Class<?> aClass = obj.getClass();
-//        try {
-//            return fieldValueBoolean(aClass, obj, fieldName);
-//        } catch (Exception e) {
-//            for (Class<?> clazz = aClass; (clazz != BaseEo.class) && (clazz != Object.class); clazz = clazz.getSuperclass()) {
-//                try {
-//                    if (clazz == BaseDefEo.class) {
-//                        return fieldValueBoolean(clazz, obj, fieldName);
-//                    }
-//                } catch (Exception localException1) {
-//                }
-//            }
-//        }
-//        return true;
-//    }
 
     /**
      * 判断eo对应中是否有值 isNotNull
@@ -300,13 +273,13 @@ public class BaseEoUtil {
         return false;
     }
 
-    public static <T extends BaseEo> String returnSelectColumnsName(Class<T> aClass) throws Exception {
-        StringBuilder sb = new StringBuilder("id,create_time as createTime,create_person as createPerson,update_time as updateTime,update_person as updatePerson,dr as dr");
-        for (ColumnInfo map : getColumnList(aClass)) {
+    public static <T extends BaseEo> String returnSelectColumnsName(Class<T> aClass) throws RuntimeException {
+        StringBuilder sb = new StringBuilder(EoDefaultConstant.QUERY_DEF_COLUMNS);
+        for (ColumnInfo columnInfo : getColumnList(aClass)) {
             sb.append(',');
-            sb.append(map.getColumn());
+            sb.append(columnInfo.getColumn());
             sb.append(" as ");
-            sb.append(map.getProperty());
+            sb.append(columnInfo.getProperty());
         }
         return sb.toString();
     }
@@ -324,11 +297,11 @@ public class BaseEoUtil {
         StringBuilder sb = new StringBuilder("id,");
         // List<ColumnInfo>
         for (ColumnInfo map : getColumnList(aClass)) {
-            if (!isNull(obj, map.getProperty())) {
+            if (isNull(obj, map.getProperty())) {
                 sb.append(map.getColumn()).append(',');
             }
         }
-        sb.append(DEF_COLUMNS);
+        sb.append(EoDefaultConstant.INSERT_DEF_COLUMNS);
         return sb.toString();
     }
 
@@ -336,18 +309,19 @@ public class BaseEoUtil {
     private static <T extends BaseEo> boolean isNull(T obj, String fieldName) {
         Class<?> aClass = obj.getClass();
         try {
-            return fieldValueBoolean(aClass, obj, fieldName);
+            return !fieldValueBoolean(aClass, obj, fieldName);
         } catch (Exception e) {
+            // 找父类
 //            for (Class<?> clazz = aClass; (clazz != BaseEo.class) && (clazz != Object.class); clazz = clazz.getSuperclass()) {
 //                try {
-//                    if (clazz == BaseDefEo.class) {
+//                    if (clazz == BaseEo.class) {
 //                        return fieldValueBoolean(clazz, obj, fieldName);
 //                    }
 //                } catch (Exception localException1) {
 //                }
 //            }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -363,7 +337,7 @@ public class BaseEoUtil {
         StringBuilder sb = new StringBuilder();
         sb.append("#{id}").append(',');
         for (ColumnInfo map : getColumnList(aClass)) {
-            if (!isNull(obj, map.getProperty())) {
+            if (isNull(obj, map.getProperty())) {
                 sb.append("#{").append(map.getProperty()).append("},");
             }
         }
@@ -376,7 +350,7 @@ public class BaseEoUtil {
         for (ColumnInfo map : getColumnList(aClass)) {
             sb.append(map.getColumn()).append(',');
         }
-        sb.append(DEF_COLUMNS);
+        sb.append(EoDefaultConstant.INSERT_DEF_COLUMNS);
         return sb.toString();
     }
 
@@ -461,7 +435,7 @@ public class BaseEoUtil {
         if ((null != obj.getUpdatePerson()) && (!"0".equals(obj.getUpdatePerson()))) {
             updatePerson = obj.getUpdatePerson();
         } else {
-            updatePerson = UPDATE_PERSON;
+            updatePerson = EoDefaultConstant.UPDATE_PERSON;
         }
         stringBuilder.append(",update_person").append("='").append(updatePerson).append("'");
         return stringBuilder.toString();
@@ -483,7 +457,7 @@ public class BaseEoUtil {
             i = 1;
         }
         for (ColumnInfo columnInfo : columnList) {
-            if ((!isNull(obj, columnInfo.getProperty())) && (!columnInfo.isShardColumn())) {
+            if ((isNull(obj, columnInfo.getProperty())) && (!columnInfo.isShardColumn())) {
                 if (i++ != 0) {
                     sb.append(',');
                 }
@@ -493,53 +467,60 @@ public class BaseEoUtil {
         return sb.toString();
     }
 
-    //    public static <T extends BaseEo> String returnWhereColumnNames(T obj, boolean appendArg0) {
-//        Class<T> aClass = obj.getClass();
-//        List<ColumnInfo> columnList = getColumnList(aClass);
-//        Set<String> columnsList = new HashSet();
-//        StringBuilder sb = new StringBuilder();
-//        List<SqlCondition> sqlFilters = obj.getSqlFilters();
-//        if ((sqlFilters != null) && (sqlFilters.size() > 0)) {
-//            for (SqlCondition sqlCondition : sqlFilters) {
-//                if ((sqlCondition != null) && (!org.apache.commons.lang3.StringUtils.isEmpty(sqlCondition.getProperty()))) {
-//                    String sqlFilterWhere = getSqlFilterWhere(aClass, sqlCondition);
-//                    if (org.apache.commons.lang3.StringUtils.isNotBlank(sqlFilterWhere)) {
-//                        if (sb.length() > 0) {
-//                            sb.append(" and ");
-//                        }
-//                        sb.append(sqlFilterWhere);
-//                    }
-//                    columnsList.add(sqlCondition.getProperty());
-//                }
-//            }
-//        }
-//        if (!columnsList.contains("dr")) {
-//            if (sb.length() > 1) {
-//                sb.append(" and ");
-//            }
-//            if (obj.getDr().intValue() == 1) {
-//                sb.append("dr").append("=1");
-//            } else {
-//                sb.append("dr").append("=0");
-//            }
-//        }
-//        for (ColumnInfo map : columnList) {
-//            if ((!isWhereNull(obj, map.getProperty())) &&
-//
-//                    (!columnsList.contains(map.getProperty()))) {
-//                if (sb.length() > 1) {
-//                    sb.append(" and ");
-//                }
-//                if (appendArg0) {
-//                    sb.append(map.getColumn()).append("=#{arg0.").append(map.getProperty()).append("}");
-//                } else {
-//                    sb.append(map.getColumn()).append("=#{").append(map.getProperty()).append("}");
-//                }
-//            }
-//        }
-//        return sb.toString();
-//    }
-//
+    /**
+     * 拼接where条件
+     *
+     * @param obj
+     * @param appendArg0
+     * @param <T>
+     * @return
+     */
+    public static <T extends BaseEo> String returnWhereColumnNames(T obj, boolean appendArg0) {
+        Class<T> aClass = (Class<T>) obj.getClass();
+        List<ColumnInfo> columnList = getColumnList(aClass);
+        Set<String> columnsList = new HashSet<>();
+        StringBuilder sb = new StringBuilder();
+        List<SqlCondition> sqlFilters = obj.getSqlConditions();
+        if ((sqlFilters != null) && (sqlFilters.size() > 0)) {
+            for (SqlCondition sqlCondition : sqlFilters) {
+                if (sqlCondition != null && !StringUtils.isEmpty(sqlCondition.getProperty())) {
+                    String sqlFilterWhere = getSqlFilterWhere(aClass, sqlCondition);
+                    if (StringUtils.isNotBlank(sqlFilterWhere)) {
+                        if (sb.length() > 0) {
+                            sb.append(" and ");
+                        }
+                        sb.append(sqlFilterWhere);
+                    }
+                    columnsList.add(sqlCondition.getProperty());
+                }
+            }
+        }
+        if (!columnsList.contains("dr")) {
+            if (sb.length() > 1) {
+                sb.append(" and ");
+            }
+            if (obj.getDr() == 1) {
+                sb.append("dr").append("=1");
+            } else {
+                sb.append("dr").append("=0");
+            }
+        }
+        // 判断eo对象中表字段是否有值，拼接where条件
+        for (ColumnInfo columnInfo : columnList) {
+            if (!isWhereNull(obj, columnInfo.getProperty()) && !columnsList.contains(columnInfo.getProperty())) {
+                if (sb.length() > 1) {
+                    sb.append(" and ");
+                }
+                if (appendArg0) {
+                    sb.append(columnInfo.getColumn()).append("=#{arg0.").append(columnInfo.getProperty()).append("}");
+                } else {
+                    sb.append(columnInfo.getColumn()).append("=#{").append(columnInfo.getProperty()).append("}");
+                }
+            }
+        }
+        return sb.toString();
+    }
+
 
     /**
      * 针对单个 column 封装where条件
@@ -666,7 +647,7 @@ public class BaseEoUtil {
                     Collection<?> listFilterValues = (Collection) conditionValue;
 
                     for (Iterator<?> iterator = listFilterValues.iterator(); iterator.hasNext(); ) {
-                        Object listValue =iterator.next();
+                        Object listValue = iterator.next();
                         if (listValue != null) {
                             if ((listValue instanceof String)) {
                                 String processValue = (String) listValue;
@@ -749,7 +730,7 @@ public class BaseEoUtil {
         }
         // 防止恶意sql注入 id = 1245690923534717955 and name = xxx ，错误sql打印，仍然执行sql todo
         if ((sb.length() > 0) && (!SqlUtil.isSpiteParams(sb.toString().toLowerCase()))) {
-            logger.error("Malice SQL Attack : {}", sb.toString());
+            logger.error("Malice SQL Params : {}", sb.toString());
         }
         // 判断 id 与 dr 此特殊字段，这两个字段如果eo对象中有值，则作为updateCondition，而不是作为更新结果
         if (obj.getId() != null) {
@@ -777,73 +758,99 @@ public class BaseEoUtil {
         return sb.toString();
     }
 
-//    public static <T extends BaseEo> String resultOrderBy(T obj) {
-//        String orderByDesc = obj.getOrderByDesc();
-//        String orderBy = obj.getOrderBy();
-//        List<SqlOrderBy> sqlOrderBys = obj.getSqlOrderBys();
-//        if ((org.apache.commons.lang3.StringUtils.isEmpty(orderByDesc)) && (org.apache.commons.lang3.StringUtils.isEmpty(orderBy)) && ((sqlOrderBys == null) || (sqlOrderBys.isEmpty()))) {
-//            return "id desc";
-//        }
-//        Class<T> aClass = obj.getClass();
-//        TableInfo table = getTableInfoWithColumn(aClass);
-//        StringBuilder sb = new StringBuilder();
-//        Iterator localIterator;
-//        if ((sqlOrderBys != null) && (!sqlOrderBys.isEmpty())) {
-//            for (localIterator = sqlOrderBys.iterator(); localIterator.hasNext(); ) {
-//                sqlOrderBy = (SqlOrderBy) localIterator.next();
-//                if (sb.length() > 0) {
-//                    sb.append(',');
-//                }
-//                columnInfo = table.getColumnInfo(sqlOrderBy.getProperty());
-//                if (null != columnInfo) {
-//                    sb.append(columnInfo.getColumn()).append(sqlOrderBy.getOrder().getSqlSyntax());
-//                } else {
-//                    sb.append(sqlOrderBy.getProperty()).append(sqlOrderBy.getOrder().getSqlSyntax());
-//                }
-//            }
-//        }
-//        SqlOrderBy sqlOrderBy;
-//        ColumnInfo columnInfo;
-//        if (!org.apache.commons.lang3.StringUtils.isEmpty(orderByDesc)) {
-//            String[] strs = orderByDesc.split(",");
-//            sqlOrderBy = strs;
-//            columnInfo = sqlOrderBy.length;
-//            for (ColumnInfo localColumnInfo1 = 0; localColumnInfo1 < columnInfo; localColumnInfo1++) {
-//                String s = sqlOrderBy[localColumnInfo1];
-//                if (sb.length() > 0) {
-//                    sb.append(',');
-//                }
-//                ColumnInfo columnInfo = table.getColumnInfo(s);
-//                if (null != columnInfo) {
-//                    sb.append(columnInfo.getColumn()).append(" desc");
-//                } else {
-//                    sb.append(s).append(" desc");
-//                }
-//            }
-//        }
-//        if (!org.apache.commons.lang3.StringUtils.isEmpty(orderBy)) {
-//            String[] strs = orderBy.split(",");
-//            sqlOrderBy = strs;
-//            columnInfo = sqlOrderBy.length;
-//            for (ColumnInfo localColumnInfo2 = 0; localColumnInfo2 < columnInfo; localColumnInfo2++) {
-//                String s = sqlOrderBy[localColumnInfo2];
-//                if (sb.length() > 0) {
-//                    sb.append(',');
-//                }
-//                ColumnInfo columnInfo = table.getColumnInfo(s);
-//                if (null != columnInfo) {
-//                    sb.append(table.getColumnInfo(s).getColumn()).append(" asc");
-//                } else {
-//                    sb.append(s).append(" asc");
-//                }
-//            }
-//        }
-//        if (sb.length() == 0) {
-//            sb.append("id").append(" desc");
-//        }
-//        return sb.toString();
-//    }
-//
+    /**
+     * 重载 returnSelectColumnsName 返回指定字段的sql拼接
+     *
+     * @param aClass
+     * @param selectColumnName
+     * @param <T>
+     * @return
+     */
+    public static <T extends BaseEo> String returnSelectColumnsName(Class<T> aClass, List<String> selectColumnName) {
+        StringBuilder sb = new StringBuilder();
+        TableInfo tableInfo = getTableInfo(aClass);
+        List<ColumnInfo> allColumnInfo = Lists.newArrayList();
+        allColumnInfo.addAll(tableInfo.getBaseColumns());
+        allColumnInfo.addAll(getColumnList(aClass));
+        // 遍历非默认字段
+        for (ColumnInfo columnInfo : allColumnInfo) {
+            if (selectColumnName.contains(columnInfo.getProperty()) || selectColumnName.contains(columnInfo.getColumn())) {
+                if (sb.length() > 0) {
+                    sb.append(',');
+                }
+                sb.append(columnInfo.getColumn());
+                sb.append(" as ");
+                sb.append(columnInfo.getProperty());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 解析排序条件，默认是 id desc
+     *
+     * @param obj
+     * @param <T>
+     * @return
+     */
+    public static <T extends BaseEo> String resultOrderBy(T obj) {
+        String orderByDesc = obj.getOrderByDesc();
+        String orderBy = obj.getOrderBy();
+        List<SqlOrderBy> sqlOrderBys = obj.getSqlOrderBys();
+        // 如果都有值，直接使用 id desc
+        if (StringUtils.isNotEmpty(orderByDesc) && StringUtils.isNotEmpty(orderBy) && CollectionUtils.isNotEmpty(sqlOrderBys)) {
+            return "id DESC";
+        }
+        Class<T> aClass = (Class<T>) obj.getClass();
+        TableInfo table = getTableInfoWithColumn(aClass);
+        StringBuilder sb = new StringBuilder();
+        if (CollectionUtils.isNotEmpty(sqlOrderBys)) {
+            for (SqlOrderBy sqlOrderBy : sqlOrderBys) {
+                if (sb.length() > 0) {
+                    sb.append(',');
+                }
+                ColumnInfo columnInfo = table.getColumnInfo(sqlOrderBy.getProperty());
+                if (null != columnInfo) {
+                    sb.append(columnInfo.getColumn()).append(sqlOrderBy.getOrder().getSqlOrderBy());
+                } else {
+                    sb.append(sqlOrderBy.getProperty()).append(sqlOrderBy.getOrder().getSqlOrderBy());
+                }
+            }
+        }
+        if (StringUtils.isNotBlank(orderByDesc)) {
+            String[] orderByColumns = orderByDesc.split(",");
+            for (String orderByColumn : orderByColumns) {
+                if (sb.length() > 0) {
+                    sb.append(',');
+                }
+                ColumnInfo columnInfo = table.getColumnInfo(orderByColumn);
+                if (null != columnInfo) {
+                    sb.append(columnInfo.getColumn()).append(" DESC");
+                } else {
+                    sb.append(orderByColumn).append(" DESC");
+                }
+            }
+        }
+        if (StringUtils.isNotEmpty(orderBy)) {
+            String[] orderByColumns = orderBy.split(",");
+            for (String orderByColumn : orderByColumns) {
+                if (sb.length() > 0) {
+                    sb.append(',');
+                }
+                ColumnInfo columnInfo = table.getColumnInfo(orderByColumn);
+                if (null != columnInfo) {
+                    sb.append(table.getColumnInfo(orderByColumn).getColumn()).append(" ASC");
+                } else {
+                    sb.append(orderByColumn).append(" ASC");
+                }
+            }
+        }
+        if (sb.length() == 0) {
+            sb.append("id").append(" DESC");
+        }
+        return sb.toString();
+    }
+
 //    public static BaseEo build(Class<? extends BaseEo> eoClass)
 //            throws Exception {
 //        try {

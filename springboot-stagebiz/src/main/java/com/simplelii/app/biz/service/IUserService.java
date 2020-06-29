@@ -1,6 +1,9 @@
 package com.simplelii.app.biz.service;
 
+import com.github.pagehelper.PageInfo;
 import com.simplelii.app.api.dto.request.UserReqDto;
+import com.simplelii.app.api.dto.response.UserRespDto;
+import com.simplelii.app.dao.eo.UserEo;
 
 /**
  * @author liXin
@@ -14,4 +17,6 @@ public interface IUserService {
      * @return
      */
     Long addUser(UserReqDto userReqDto);
+
+    PageInfo<UserEo> query();
 }
