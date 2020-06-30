@@ -84,7 +84,6 @@ public interface BaseMapper<T extends BaseEo> {
     @SelectProvider(type = BaseSqlTemplate.class, method = "queryOneByEo")
     public abstract T queryOneByEo(T paramT, String... tableColumnName);
 
-
     @SelectProvider(type = BaseSqlTemplate.class, method = "queryAll")
     public abstract List<T> queryAll(Class<T> paramClass, String... tableColumnName);
 
@@ -92,7 +91,7 @@ public interface BaseMapper<T extends BaseEo> {
     public abstract List<T> queryByEo(@Param("arg0") T paramT, String... tableColumnName);
 
     @SelectProvider(type = BaseSqlTemplate.class, method = "count")
-    public abstract int count(Class<T> paramClass);
+    public abstract int count(Class<T> eoClass);
 
     @SelectProvider(type = BaseSqlTemplate.class, method = "countByCondition")
     public abstract int countByCondition(T paramT);

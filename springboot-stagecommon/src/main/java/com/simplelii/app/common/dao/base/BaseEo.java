@@ -8,7 +8,6 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import java.util.List;
  * @date 2020/6/10
  */
 @Data
-public class BaseEo implements Serializable {
+public class BaseEo {
 
     private static final long serialVersionUID = 1906675943768391743L;
 

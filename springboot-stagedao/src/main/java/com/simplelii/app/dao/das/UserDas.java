@@ -1,7 +1,7 @@
 package com.simplelii.app.dao.das;
 
 import com.google.common.collect.Lists;
-import com.simplelii.app.dao.das.basedas.BaseDas;
+import com.simplelii.app.dao.das.basedas.AbstractBaseDas;
 import com.simplelii.app.dao.eo.UserEo;
 import com.simplelii.app.dao.mapper.UserMapper;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.util.List;
  * @date 2020/6/10
  */
 @Repository
-public class UserDas extends BaseDas {
+public class UserDas extends AbstractBaseDas<UserEo> {
     private static final Logger logger = LoggerFactory.getLogger(UserDas.class);
 
     @Resource
