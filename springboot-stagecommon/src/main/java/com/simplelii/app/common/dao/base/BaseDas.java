@@ -5,13 +5,11 @@ import com.google.common.collect.Maps;
 import com.simplelii.app.common.utils.SpringBeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author liXin
@@ -34,7 +32,7 @@ public abstract class BaseDas<T extends BaseEo> {
 
     private static final Object mutex = new Object();
 
-    private static Map<String, BaseMapper> mappers = new ConcurrentHashMap<>();
+    private static Map<String, BaseMapper> mappers ;
 
 
     /**
@@ -43,7 +41,6 @@ public abstract class BaseDas<T extends BaseEo> {
      * @return
      */
     @SuppressWarnings("all")
-    @Bean(name = "proxyMapperMap")
     public Map<String, BaseMapper> getMappersFromIOC() {
         if (mappers.isEmpty()) {
             mappers = (Map<String, BaseMapper>) SpringBeanUtil.getBeansOfType(BaseMapper.class);

@@ -96,8 +96,7 @@ public class SpringBeanUtil implements ApplicationContextAware {
      */
     public static Map<String, ?> getBeansOfType(Class<?> clazz) {
         assertContextInjected();
-        Map<String, ?> beans = applicationContext.getBeansOfType(clazz);
-        return beans;
+        return applicationContext.getBeansOfType(clazz);
     }
 
 
