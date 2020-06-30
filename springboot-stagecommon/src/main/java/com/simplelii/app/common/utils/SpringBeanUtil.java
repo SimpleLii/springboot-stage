@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 /**
@@ -29,6 +30,11 @@ public class SpringBeanUtil implements ApplicationContextAware {
             logger.warn("SpringContextHolder中的ApplicationContext被覆盖, 原有ApplicationContext为:{}", SpringBeanUtil.applicationContext);
         }
         SpringBeanUtil.applicationContext = applicationContext;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annotation) {
+        return applicationContext.getBeansWithAnnotation(annotation);
     }
 
     /**

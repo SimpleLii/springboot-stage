@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author SimpleLii
- * @description
+ * @descriptionmapper
  * @date 11:18 2020/6/24
  */
 public class BaseSqlTemplate<T extends BaseEo> {

@@ -30,8 +30,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public Long addUser(UserReqDto userReqDto) {
         UserEo eo = new UserEo();
-        BeanUtils.copyProperties(userReqDto, eo);
-        userDas.addUser(eo);
+
+        int count = userDas.count();
         return eo.getId();
     }
 

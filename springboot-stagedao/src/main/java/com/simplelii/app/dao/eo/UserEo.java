@@ -4,6 +4,7 @@ import com.simplelii.app.common.dao.base.BaseEo;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
@@ -13,6 +14,7 @@ import javax.persistence.Table;
  */
 @Data
 @Table(name = "user")
+@Entity
 public class UserEo extends BaseEo {
 
 

@@ -1,6 +1,6 @@
 package com.simplelii.app.dao.das;
 
-import com.simplelii.app.common.dao.base.BaseDas;
+import com.simplelii.app.dao.das.basedas.BaseDas;
 import com.simplelii.app.dao.eo.UserEo;
 import com.simplelii.app.dao.mapper.UserMapper;
 import org.springframework.stereotype.Repository;

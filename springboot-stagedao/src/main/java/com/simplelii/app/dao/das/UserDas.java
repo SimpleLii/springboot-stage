@@ -1,16 +1,14 @@
 package com.simplelii.app.dao.das;
 
 import com.google.common.collect.Lists;
-import com.simplelii.app.common.dao.base.BaseDas;
-import com.simplelii.app.common.dao.sql.SqlCondition;
-import com.simplelii.app.common.dao.sql.SqlOrderBy;
+import com.simplelii.app.dao.das.basedas.BaseDas;
 import com.simplelii.app.dao.eo.UserEo;
 import com.simplelii.app.dao.mapper.UserMapper;
-import org.apache.catalina.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,16 +18,12 @@ import java.util.List;
  */
 @Repository
 public class UserDas extends BaseDas {
+    private static final Logger logger = LoggerFactory.getLogger(UserDas.class);
 
     @Resource
     private UserMapper userMapper;
 
     public void addUser(UserEo eo) {
-        UserEo userEo = new UserEo();
-        List<SqlCondition> sqlConditions = new ArrayList<>();
-        sqlConditions.add(SqlCondition.eq("id", 1245690923534717955L));
-        userEo.setSqlConditions(sqlConditions);
-        userMapper.deleteLogicByEo(userEo);
     }
 
     public void updateSelect() {

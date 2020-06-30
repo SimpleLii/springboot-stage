@@ -26,8 +26,11 @@ public class IdUtil {
     private static final long sequenceBits = 10L;
     private static final Random random = new Random();
     private static final long timestampBits = 40L;
+    // 10 位机器id
     private static final long workerIdShift = 10L;
+    // 20 位时间戳
     private static final long timestampShift = 20L;
+    // 60 位服务标识
     private static final long tenantIdShift = 60L;
     private static final long sequenceMask = 1023L;
     private static long lastTimestamp = -1L;
@@ -36,6 +39,13 @@ public class IdUtil {
         return INSTANCE;
     }
 
+    /**
+     *  分布式id
+     * @param workerId ip 192.168.25.12 workerId = 192+168+25+12
+     * @param tenantCode 不同服务指定的唯一标识 eg：会员：12，商城：15；库存：20
+     * @return id
+     * @throws RuntimeException
+     */
     public static synchronized long nextId(long workerId, long tenantCode) throws RuntimeException {
         if ((workerId > maxWorkerId) || (workerId < 0L)) {
             throw new RuntimeException(String.format("worker Id can't be greater than %d or less than 0", sequenceMask));
@@ -44,6 +54,7 @@ public class IdUtil {
             throw new RuntimeException(String.format("tenant Id can't be greater than %d or less than 0", maxTenantId));
         }
         long timestamp = System.currentTimeMillis();
+        //  0x3FF = 1023
         if (lastTimestamp == timestamp) {
             sequence = sequence + 1L & 0x3FF;
             if (sequence == 0L) {
@@ -54,7 +65,6 @@ public class IdUtil {
         }
         if (timestamp < lastTimestamp) {
             logger.error(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
-
             throw new RuntimeException(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
         lastTimestamp = timestamp;
