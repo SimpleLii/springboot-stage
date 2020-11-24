@@ -1,5 +1,5 @@
 # springboot-stage
-springboot脚手架
+spring-mybatis-common
 
 ## 结构
    ----- springboot-stage         ------ 父工程\
