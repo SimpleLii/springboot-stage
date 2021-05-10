@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property name="yes.server.logWorkDir" value="log" />
+    <property name="log.file" value="test.log"/>
+    <property name="logback.appName" value="springboot-test"/>
+    <property name="simplelii.env.module" value="stage"/>
+    <property name="simplelii.env.module" value="stage"/>
     <!-- xml中部分重复的配置或者是动态的变量可以通过其他文件引入，比如变量问题,该文件可以引入变量解决undefined -->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <!-- 日志文件输出格式,在控制台输出 -->
@@ -44,7 +49,9 @@
     <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG"/>
     <logger name="java.sql.Connection" level="DEBUG"/>
     <logger name="java.sql.Statement" level="DEBUG"/>
-    <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+    <logger name="java.sql.PreparedStatement" level="DEBUG">
+         <appender-ref ref="ROLLING" />
+    </logger>
     <!-- 标签logger 默认的日志 -->
     <root level="${simplelii.env.logger.level}">
         <appender-ref ref="ROLLING"/>
@@ -69,3 +76,4 @@
         <!--</flter>-->
     <!--</appender>-->
 </configuration>
+
